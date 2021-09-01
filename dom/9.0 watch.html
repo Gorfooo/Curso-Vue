@@ -9,25 +9,26 @@
 </head>
 <body>
     <div id="app">
-        <p>{{titulo}}</p>
-        <p>{{saudacao()}}</p>
-        <a v-bind:href="link">Google</a>
-        <!-- ou :href -->
+        <p>{{contador}}</p>
+        <button v-on:click="somar()">Somar 1</button>
     </div>
     <script>
         new Vue({
             el: '#app',
             data:{
-                titulo: 'Usando Vue.Js',
-                link: 'http://google.com.br'
+                contador: 0,
+            },
+            watch:{
+                // pode-se usar um timeout para zerar contador após 2 segundos sem clicar
+                contador (novo,antigo){
+                    console.log(novo,antigo);                }
             },
             methods:{
-                saudacao: function(){
-                    console.log(this);
-                    return this.titulo
-                }
-            }
-        })
+                somar(){
+                    this.contador++;
+                },
+            }           
+        });
     </script>
 </body>
 </html>

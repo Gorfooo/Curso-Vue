@@ -9,18 +9,28 @@
 </head>
 <body>
     <div id="app">
-        <p>{{contador}}</p>
-        <button v-on:click="somar">Somar 1</button>
+        <!-- pode usar if ternário no {{}} -->
+        <p>{{contador * 2}}</p>
+        <button v-on:click="somar(5, $event)">Somar 1</button>
+        <!-- ou @click -->
+        <p v-on:mousemove="atualizaXY">Mouse {{x}} e {{y}}</p>
     </div>
     <script>
         new Vue({
             el: '#app',
             data:{
                 contador: 0,
+                x:0,
+                y:0
             },
             methods:{
-                somar(){
-                    this.contador++;
+                somar(valor, event){
+                    console.log(event);
+                    this.contador += valor;
+                },
+                atualizaXY(e){
+                    this.x = e.clientX;
+                    this.y = e.clientY;
                 }
             }           
         });

@@ -10,22 +10,16 @@
 <body>
     <div id="app">
         <p>{{titulo}}</p>
-        <p>{{saudacao()}}</p>
-        <a v-bind:href="link">Google</a>
-        <!-- ou :href -->
+        <input v-model='titulo' type="text">
     </div>
     <script>
         new Vue({
             el: '#app',
             data:{
                 titulo: 'Usando Vue.Js',
-                link: 'http://google.com.br'
             },
             methods:{
-                saudacao: function(){
-                    console.log(this);
-                    return this.titulo
-                }
+
             }
         })
     </script>
