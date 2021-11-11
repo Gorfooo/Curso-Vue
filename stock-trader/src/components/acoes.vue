@@ -53,17 +53,21 @@ export default {
   },
   methods: {
     comprarAcao(empresa, preco, quantidade) {
-      // const compra = {
-      //   empresa,
-      //   preco,
-      //   quantidade,
-      // };
+      const compra = {
+        empresa,
+        preco,
+        quantidade,
+      };
 
-      // Vue.axios.get()
-
-      const novaQuantidade = this.$store.state.saldo - (quantidade * preco);
-
-      this.$store.commit('acaoComprada', novaQuantidade);
+      this.axios.post('/acoesCompradas.json', compra)
+        .then((response) => {
+          console.log(response);
+          const novaQuantidade = this.$store.state.saldo - (quantidade * preco);
+          this.$store.commit('acaoComprada', novaQuantidade);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
