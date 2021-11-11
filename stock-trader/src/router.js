@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Acoes from './components/acoes/acoes';
 
 const Home = () => import('./components/home');
 const Portfolio = () => import('./components/portfolio');
-// const Acoes = () => import('./components/acoes');
+const Acoes = () => import('./components/acoes');
 
 Vue.use(Router);
 

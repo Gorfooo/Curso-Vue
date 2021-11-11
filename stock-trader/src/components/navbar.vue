@@ -10,12 +10,9 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <router-link
-        to="/acoes"
-        ><b-nav-item href="#">AÇÕES</b-nav-item></router-link>
-        <b-nav-item href="#">INÍCIO</b-nav-item>
-        <b-nav-item href="#">PORTFÓLIO</b-nav-item>
-        <b-nav-item href="#">AÇÕES</b-nav-item>
+        <b-nav-item to="/home">INÍCIO</b-nav-item>
+        <b-nav-item to="/portfolio">PORTFÓLIO</b-nav-item>
+        <b-nav-item to="/acoes">AÇÕES</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
@@ -23,15 +20,7 @@
 
         <b-nav-item>Finalizar Dia</b-nav-item>
 
-        <b-nav-item-dropdown right>
-          <!-- Using 'button-content' slot -->
-          <template #button-content>
-            <em>Salvar & Carregar</em>
-          </template>
-          <b-dropdown-item href="#">Salvar Dados</b-dropdown-item>
-          <b-dropdown-item href="#">Carregar Dados</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item>Saldo: R$ </b-nav-item>
+        <b-nav-item>Saldo: R$ {{ saldo }}</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -39,10 +28,10 @@
 
 <script>
 export default {
-
+  computed: {
+    saldo() {
+      return this.$store.state.saldo;
+    },
+  },
 };
 </script>
-
-<style>
-
-</style>
