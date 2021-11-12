@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     saldo: 10000,
+    acquiredStocks: [],
     acoes: [
       {
         empresa: 'BMW',
@@ -38,10 +40,22 @@ export default new Vuex.Store({
           preco: Math.round((item.preco + (item.preco / 100) * Math.floor(Math.random() * (5 - 1 + 1)) + 1) * 100) / 100 }));
       state.acoes = newPrices;
     },
+    saveAcquiredStocks(state, payload) {
+      state.acquiredStocks = payload;
+    },
   },
   actions: {
-    saveSaldo(payload) {
-      this.axios.post('/saldo.json', payload)
+    saveSaldo(context) {
+      axios.patch('/saldo/saldo.json', context.rootState.saldo)
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    saveAcquiredStocks(context) {
+      axios.get('/acoesCompradas.json')
+        .then((response) => {
+          context.commit('saveAcquiredStocks', response.data);
+        })
         .catch((error) => {
           console.log(error);
         });

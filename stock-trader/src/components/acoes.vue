@@ -36,17 +36,15 @@ export default {
   methods: {
     comprarAcao(empresa, preco, quantidade) {
       const compra = {
-        empresa,
         preco,
         quantidade,
       };
 
-      this.axios.post('/acoesCompradas.json', compra)
-        .then((response) => {
-          console.log(response);
+      this.axios.patch(`/acoesCompradas/${empresa}.json`, compra)
+        .then(() => {
           const novoSaldo = this.$store.state.saldo - (quantidade * preco);
           this.$store.commit('acaoComprada', novoSaldo);
-          this.$store.dispatch('saveSaldo', this.$store.state.saldo);
+          this.$store.dispatch('saveSaldo');
         })
         .catch((error) => {
           console.log(error);
