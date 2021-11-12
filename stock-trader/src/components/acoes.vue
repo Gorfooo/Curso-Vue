@@ -31,24 +31,6 @@ export default {
   data() {
     return {
       quantidades: [],
-      acoes: [
-        {
-          empresa: 'BMW',
-          preco: 100,
-        },
-        {
-          empresa: 'Google',
-          preco: 150,
-        },
-        {
-          empresa: 'Compufour',
-          preco: 200,
-        },
-        {
-          empresa: 'Apple',
-          preco: 250,
-        },
-      ],
     };
   },
   methods: {
@@ -62,18 +44,19 @@ export default {
       this.axios.post('/acoesCompradas.json', compra)
         .then((response) => {
           console.log(response);
-          const novaQuantidade = this.$store.state.saldo - (quantidade * preco);
-          this.$store.commit('acaoComprada', novaQuantidade);
+          const novoSaldo = this.$store.state.saldo - (quantidade * preco);
+          this.$store.commit('acaoComprada', novoSaldo);
+          this.$store.dispatch('saveSaldo', this.$store.state.saldo);
         })
         .catch((error) => {
           console.log(error);
         });
     },
   },
+  computed: {
+    acoes() {
+      return this.$store.state.acoes;
+    },
+  },
 };
-
 </script>
-
-<style>
-
-</style>

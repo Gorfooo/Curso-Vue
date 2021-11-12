@@ -18,7 +18,7 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
 
-        <b-nav-item>Finalizar Dia</b-nav-item>
+        <b-nav-item @click="finalizarDia">Finalizar Dia</b-nav-item>
 
         <b-nav-item>Saldo: R$ {{ saldo }}</b-nav-item>
       </b-navbar-nav>
@@ -31,6 +31,11 @@ export default {
   computed: {
     saldo() {
       return this.$store.state.saldo;
+    },
+  },
+  methods: {
+    finalizarDia() {
+      this.$store.commit('ajustaPrecos');
     },
   },
 };

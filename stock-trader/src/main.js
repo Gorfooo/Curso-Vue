@@ -8,7 +8,6 @@ import App from './App';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import store from './trades/trades';
-// import './plugins/axios';
 
 Vue.use(vueAxios, axios);
 Vue.axios.defaults.baseURL = 'https://stock-trader-748bd-default-rtdb.firebaseio.com/';
