@@ -12,6 +12,19 @@ import store from './trades/trades';
 Vue.use(vueAxios, axios);
 Vue.axios.defaults.baseURL = 'https://stock-trader-748bd-default-rtdb.firebaseio.com/';
 
+router.beforeEach((to, from, next) => {
+  if (store.state.saldo !== 10000) {
+    axios.get('/saldo.json')
+      .then((response) => {
+        store.state.saldo = response.data.saldo;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  next();
+});
+
 Vue.config.productionTip = false;
 
 new Vue({

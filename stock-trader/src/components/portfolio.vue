@@ -5,7 +5,7 @@
       <div class="col-md-4" v-for="(acao, i) in acquiredStocks" :key="i">
         <v-card elevation="4" outlined>
           <v-card-title class="bg-primary text-white">
-            {{ acao.empresa }}<small>(Preço: R$ {{ acao.preco }} | Qtde: {{ acao.quantidade }})</small>
+            {{ acquiredStocks[i] }}<small>(Preço: R$ {{ acao.preco }} | Qtde: {{ acao.quantidade }})</small>
           </v-card-title>
           <v-card-text class="mt-4">
             <div class="row">
@@ -68,7 +68,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('saveAcquiredStocks');
-    console.log(this.$store.state.acquiredStocks);
   },
 };
 </script>

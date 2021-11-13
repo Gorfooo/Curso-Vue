@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     comprarAcao(empresa, preco, quantidade) {
+      // console.log(this.$store.getters.getAcquiredStocks);
       const compra = {
         preco,
         quantidade,
@@ -45,10 +46,12 @@ export default {
           const novoSaldo = this.$store.state.saldo - (quantidade * preco);
           this.$store.commit('acaoComprada', novoSaldo);
           this.$store.dispatch('saveSaldo');
+          this.$store.dispatch('saveAcquiredStocks');
         })
         .catch((error) => {
           console.log(error);
         });
+      console.log(this.$store.state.acquiredStocks);
     },
   },
   computed: {
