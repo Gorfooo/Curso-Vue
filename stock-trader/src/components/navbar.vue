@@ -34,8 +34,23 @@ export default {
     },
   },
   methods: {
-    finalizarDia() {
-      this.$store.commit('ajustaPrecos');
+    async finalizarDia() {
+      await this.$store.dispatch('saveAcquiredStocks');
+
+      const newStocks = Object.values(this.$store.state.acoes).map((stock, i) => {
+        const empresas = Object.keys(this.$store.state.acoes);
+        const percentage = Math.floor(Math.random() * (2 - -2 + 1)) + -2;
+        const Price = stock.preco + (stock.preco / 100) * percentage;
+        const roundedPrice = Math.round(Price * 100) / 100;
+        return { empresa: empresas[i], preco: roundedPrice };
+      });
+
+      this.$store.commit('trocaPrecos', newStocks);
+      this.$store.dispatch('salvaPrecos');
+      this.axios.get('/acoesCompradas.json')
+        .then((response) => {
+          this.$store.state.acoes = response.data;
+        });
     },
   },
 };

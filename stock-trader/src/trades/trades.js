@@ -11,59 +11,50 @@ export default new Vuex.Store({
   state: {
     saldo: 10000,
     acquiredStocks: [],
-    acoes: [
-      {
-        empresa: 'BMW',
-        preco: 100,
-      },
-      {
-        empresa: 'Google',
-        preco: 150,
-      },
-      {
-        empresa: 'Compufour',
-        preco: 200,
-      },
-      {
-        empresa: 'Apple',
-        preco: 250,
-      },
-    ],
+    acoes: [],
   },
   mutations: {
     acaoComprada(state, payload) {
-      state.saldo = payload;
+      state.saldo = Math.round(payload * 100) / 100;
     },
     acaoVendida(state, payload) {
-      state.saldo = payload;
+      state.saldo = Math.round(payload * 100) / 100;
     },
-    ajustaPrecos(state) {
-      const newPrices = state.acoes.map((item) =>
-        ({ empresa: item.empresa,
-          preco: Math.round((item.preco + (item.preco / 100) * Math.floor(Math.random() * (5 - (-5) + 1)) + -5) * 100) / 100 }));
-      state.acoes = newPrices;
+    trocaPrecos(state, payload) {
+      const newObject = [];
+      Object.keys(payload).map((key, i) => {
+        newObject[payload[i].empresa] = { empresa: payload[i].empresa, preco: payload[i].preco };
+
+        return { newObject };
+      });
+      state.acoes = newObject;
     },
     saveAcquiredStocks(state, payload) {
-      // console.log(payload);
       state.acquiredStocks = { ...payload };
-      // console.log(state.acquiredStocks);
     },
   },
   actions: {
     saveSaldo(context) {
-      axios.put('/saldo/saldo.json', context.rootState.saldo)
-        .catch((error) => {
-          console.log(error);
-        });
+      axios.put('/saldo/saldo.json', Math.round(context.rootState.saldo * 100) / 100);
     },
-    saveAcquiredStocks(context) {
-      axios.get('/acoesCompradas.json')
+    async saveAcquiredStocks(context) {
+      await axios.get('/acoesCompradas.json')
         .then((response) => {
           context.commit('saveAcquiredStocks', response.data);
-        })
-        .catch((error) => {
-          console.log(error);
         });
+    },
+    salvaPrecos() {
+      const newStocksAcquired = Object.keys(this.state.acquiredStocks).map((stock, i) => {
+        const price = Object.values(this.state.acoes)[i].preco;
+        return { stock, preco: price };
+      });
+      newStocksAcquired.map((item) => {
+        const empresa = item.stock;
+        const newStocksAcquiredStats = { preco: item.preco, quantidade: this.state.acquiredStocks[empresa].quantidade };
+        axios.patch(`/acoesCompradas/${empresa}.json`, newStocksAcquiredStats);
+        return { newStocksAcquired };
+      });
+      this.dispatch('saveAcquiredStocks');
     },
   },
 });

@@ -13,15 +13,15 @@ Vue.use(vueAxios, axios);
 Vue.axios.defaults.baseURL = 'https://stock-trader-748bd-default-rtdb.firebaseio.com/';
 
 router.beforeEach((to, from, next) => {
-  if (store.state.saldo !== 10000) {
-    axios.get('/saldo.json')
-      .then((response) => {
-        store.state.saldo = response.data.saldo;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  axios.get('/saldo.json')
+    .then((response) => {
+      store.state.saldo = response.data === null ? 10000 : response.data.saldo;
+    });
+  axios.get('/acoesCompradas.json')
+    .then((response) => {
+      store.state.acoes = response.data;
+    });
+
   next();
 });
 

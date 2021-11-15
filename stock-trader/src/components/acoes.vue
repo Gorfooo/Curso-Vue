@@ -4,7 +4,7 @@
 
       <div class="col-md-4" v-for="(acao, i) in acoes" :key="i">
         <v-card elevation="4" outlined>
-          <v-card-title class="bg-success text-white">{{ acao.empresa }}<small>(Preço: R$ {{ acao.preco }})</small></v-card-title>
+          <v-card-title class="bg-success text-white">{{ i }}<small>&nbsp;(Preço: R$ {{ acao.preco }})</small></v-card-title>
           <v-card-text class="mt-4">
             <div class="row">
               <v-text-field label="Quantidade" class="pl-3"
@@ -14,7 +14,7 @@
               elevation="2"
               small
               class="align-self-center ml-3"
-              @click="comprarAcao(acao.empresa, acao.preco, quantidades[i])"
+              @click="comprarAcao(i, acao.preco, quantidades[i])"
               :disabled="quantidades[i] <= 0 || quantidades[i] == undefined"
               >Comprar</v-btn>
             </div>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return {
@@ -34,30 +36,31 @@ export default {
     };
   },
   methods: {
-    comprarAcao(empresa, preco, quantidade) {
-      // console.log(this.$store.getters.getAcquiredStocks);
+    async comprarAcao(empresa, preco, novaQuantidade) {
+      if (novaQuantidade <= 0) {
+        return;
+      }
+      await this.$store.dispatch('saveAcquiredStocks');
+
+      const empresaAcao = empresa;
+      const quantidadeComprada = this.$store.getters.getAcquiredStocks[empresaAcao] === undefined ? 0 :
+        this.$store.getters.getAcquiredStocks[empresaAcao].quantidade;
       const compra = {
         preco,
-        quantidade,
+        quantidade: parseFloat(quantidadeComprada) + parseFloat(novaQuantidade),
       };
 
       this.axios.patch(`/acoesCompradas/${empresa}.json`, compra)
         .then(() => {
-          const novoSaldo = this.$store.state.saldo - (quantidade * preco);
+          const novoSaldo = this.$store.state.saldo - (novaQuantidade * preco);
           this.$store.commit('acaoComprada', novoSaldo);
           this.$store.dispatch('saveSaldo');
           this.$store.dispatch('saveAcquiredStocks');
-        })
-        .catch((error) => {
-          console.log(error);
         });
-      console.log(this.$store.state.acquiredStocks);
     },
   },
   computed: {
-    acoes() {
-      return this.$store.state.acoes;
-    },
+    ...mapState(['acoes']),
   },
 };
 </script>

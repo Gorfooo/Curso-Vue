@@ -1,0 +1,23 @@
+{
+  "acoesCompradas" : {
+    "Apple" : {
+      "preco" : 250,
+      "quantidade" : 0
+    },
+    "BMW" : {
+      "preco" : 100,
+      "quantidade" : 0
+    },
+    "Compufour" : {
+      "preco" : 200,
+      "quantidade" : 0
+    },
+    "Google" : {
+      "preco" : 150,
+      "quantidade" : 0
+    }
+  },
+  "saldo" : {
+    "saldo" : 10000
+  }
+}

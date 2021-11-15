@@ -2,10 +2,11 @@
   <v-container>
     <div class="row">
 
-      <div class="col-md-4" v-for="(acao, i) in acquiredStocks" :key="i">
+      <div class="col-md-4" v-for="(acao, i) in acquiredStocks" :key="i" :class="{'d-none': acao.quantidade <= 0}">
         <v-card elevation="4" outlined>
           <v-card-title class="bg-primary text-white">
-            {{ acquiredStocks[i] }}<small>(Preço: R$ {{ acao.preco }} | Qtde: {{ acao.quantidade }})</small>
+            {{ [i][0] }}
+            <small>&nbsp;(Preço: R$ {{ acao.preco }} | Qtde: {{ acao.quantidade }})</small>
           </v-card-title>
           <v-card-text class="mt-4">
             <div class="row">
@@ -16,8 +17,8 @@
               elevation="2"
               small
               class="align-self-center ml-3"
-              @click="venderAcao(acao.empresa, acao.preco, quantidades[i], acao.quantidade)"
-              :disabled="quantidades[i] <= 0 || quantidades[i] == undefined"
+              @click="venderAcao([i][0], quantidades[i], acao.quantidade)"
+              :disabled="quantidades[i] <= 0 || quantidades[i] == undefined || quantidades[i] > acao.quantidade"
               >Vender</v-btn>
             </div>
           </v-card-text>
@@ -29,6 +30,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return {
@@ -36,38 +39,35 @@ export default {
     };
   },
   methods: {
-    venderAcao(empresa, preco, quantidadeVenda, quantidadeCompra) {
+    venderAcao(empresa, quantidadeVenda, quantidadeCompra) {
+      if (quantidadeVenda > quantidadeCompra) {
+        return;
+      }
+
+      const { preco } = this.$store.state.acoes[empresa];
       const venda = {
-        empresa,
         preco,
         quantidade: quantidadeCompra - quantidadeVenda,
       };
 
-      const method = (quantidadeCompra - quantidadeVenda) <= 0 ? 'delete' : 'patch';
-
       this.axios({
-        method,
+        method: 'patch',
         url: `/acoesCompradas/${empresa}.json`,
         data: venda,
       })
-        .then((response) => {
-          console.log(response);
+        .then(() => {
           const novoSaldo = this.$store.state.saldo + (quantidadeVenda * preco);
           this.$store.commit('acaoVendida', novoSaldo);
           this.$store.dispatch('saveSaldo', this.$store.state.saldo);
-        })
-        .catch((error) => {
-          console.log(error);
+          this.$store.dispatch('saveAcquiredStocks');
         });
     },
   },
   computed: {
-    acquiredStocks() {
-      return this.$store.state.acquiredStocks;
-    },
+    ...mapState(['acquiredStocks']),
   },
-  mounted() {
-    this.$store.dispatch('saveAcquiredStocks');
+  async created() {
+    await this.$store.dispatch('saveAcquiredStocks');
   },
 };
 </script>
